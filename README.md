@@ -20,7 +20,7 @@ $config['numPerPage'] = 16; // Number of posts on front page
 ```
 
 ###Search & Categories
-To activite search & categories fonctionality, Download the plugins folder, upload the two folders in your plugins folder and download search.md and categories.md from content-sample and upload its to your content folder
+To activate search & categories functionalities, Download the plugins folder, upload the two folders : (<a href="https://github.com/julindra/pico_categories_page">pico_categories_page</a>, <a href="https://github.com/mwgg/Pico-Search">pico_search</a>) in your plugins folder and download search.md & categories.md from content-sample and upload its to your content folder.
 
 ###Front Page & Post Page
 Copy index.md & page.md from content-sample to your content folder and change the meta data 
