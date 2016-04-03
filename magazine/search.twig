@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	{% if meta.purpose == "search_results" %}
+	<title>Search &mdash; {{ site_title }}</title>
+	{% else %}
+	<title>Categories &mdash; {{ site_title }}</title>
+	{% endif %}
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="{{ meta.description|striptags }}" />
+	<meta name="author" content="{{ config.author }}" />
+
+  	<!-- Facebook and Twitter integration -->
+	<meta property="og:title" content="{{ site_title }}"/>
+	<meta property="og:image" content="{{ config.image }}"/>
+	<meta property="og:url" content="{{ base_url }}"/>
+	<meta property="og:site_name" content="{{ site_title }}"/>
+	<meta property="og:description" content="{{ meta.description|striptags }}"/>
+	<meta name="twitter:title" content="{{ site_title }}" />
+	<meta name="twitter:image" content="{{ config.image }}" />
+	<meta name="twitter:url" content="{{ base_url }}" />
+	<meta name="twitter:card" content="summary_large_image" />
+
+	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+	<link rel="shortcut icon" href="{{ theme_url }}/favicon.ico">
+	<!-- Google Fonts -->
+	<link href='http://fonts.googleapis.com/css?family=Playfair+Display:400,700,400italic|Roboto:400,300,700' rel='stylesheet' type='text/css'>
+	<!-- Animate -->
+	<link rel="stylesheet" href="{{ theme_url }}/css/animate.css">
+	<!-- Icomoon -->
+	<link rel="stylesheet" href="{{ theme_url }}/css/icomoon.css">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="{{ theme_url }}/css/bootstrap.css">
+
+	<link rel="stylesheet" href="{{ theme_url }}/css/style.css">
+	<style>
+		div.pager {text-align: center;margin: 1em 0;}
+		div.pager span {display: inline-block;width: 1.8em;height: 1.8em;line-height: 1.8;text-align: center;cursor: pointer;background: #000;color: #fff;margin-right: 0.5em;}
+		div.pager span.active {background: #F7CA78;}
+	</style>
+	<!-- Modernizr JS -->
+	<script defer src="{{ theme_url }}/js/modernizr-2.6.2.min.js"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9]>
+	<script src="{{ theme_url }}/js/respond.min.js"></script>
+	<![endif]-->
+	{% if meta.purpose == "search_results" %}
+	<script type="application/ld+json">
+	{
+		"@context": "http://schema.org",
+		"@type": "SearchResultsPage",
+		"name": "Search Page - {{ site_title }}",
+		"publisher": {
+			"@type": "Organization",
+			"name": "{{ site_title }}"
+		}
+	}
+	</script>
+	{% else %}
+	<script type="application/ld+json">
+	{
+		"@context": "http://schema.org",
+		"@type": "CollectionPage",
+		"name": "Categories - {{ site_title }}",
+		"publisher": {
+			"@type": "Organization",
+			"name": "{{ site_title }}"
+		}
+	}
+	</script>
+	{% endif %}
+	</head>
+	<body>
+	
+	
+	<!-- END #fh5co-offcanvas -->
+	<header id="fh5co-header">
+		
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 text-center">
+					<h1 id="fh5co-logo"><a href="{{ base_url }}">{{ site_title }} <sup>TM</sup></a></h1>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- END #fh5co-header -->
+	
+	<div class="container-fluid">
+		{% if meta.purpose == "search_results" %}
+		<div class="row fh5co-post-entry">
+			<p class="col-lg-12 col-md-12 text-center">{{ search_num_results }} page(s) found for " {{ search_term }} "</p>
+			{% for page in search_results %}
+			<article class="col-lg-3 col-md-4 col-sm-6 col-xs- 12 animate-box">
+				<figure>
+					<a href="{{ page.url }}"><img src="{{ page.meta.thumbnail }}" alt="{{ page.title }}" class="img-responsive"></a>
+				</figure>
+				<span class="fh5co-meta"><a href="#">{{ page.meta.category }}</a></span>
+				<h2 class="fh5co-article-title"><a href="{{ page.url }}">{{ page.title }}</a></h2>
+				<span class="fh5co-meta fh5co-date">{{ page.date }}</span>
+			</article>
+			{% endfor %}
+		</div>
+		{% endif %}
+		
+		{% if meta.purpose == "pico_categories_page" %}
+		<div class="row fh5co-post-entry">
+            {% for cat, cated_pages in pico_categories_page %}
+				<article class="col-lg-3 col-md-4 col-sm-6 col-xs- 12 animate-box">
+					<h2 class="fh5co-article-title">{{ cat }}</h2>
+                   
+                        {% for cated_page_title, cated_page_link in cated_pages %}
+                            <span class="fh5co-meta fh5co-date"><a href="{{ cated_page_link }}">{{ cated_page_title }}</a></span>
+                        {% endfor %}
+                    
+                </article>
+            {% endfor %}
+        </div>
+		{% endif %}
+	</div>
+	<footer id="fh5co-footer">
+		<p><small>&copy; 2016. {{ site_title }}. All Rights Reserverd. <br> Designed by <a href="http://freehtml5.co" target="_blank">FREEHTML5.co</a>  Developed By : <a href="http://besrourms.github.io/" target="_blank">Safouan Besrour</a></small></p>
+	</footer>
+
+	<!-- jQuery -->
+	<script src="{{ theme_url }}/js/jquery.min.js"></script>
+	<!-- jQuery Easing -->
+	<script src="{{ theme_url }}/js/jquery.easing.1.3.js"></script>
+	<!-- Bootstrap -->
+	<script defer src="{{ theme_url }}/js/bootstrap.min.js"></script>
+	<!-- Waypoints -->
+	<script defer src="{{ theme_url }}/js/jquery.waypoints.min.js"></script>
+	<!-- Main JS -->
+	<script src="{{ theme_url }}/js/main.js"></script>
+	<script>
+	$(document).ready(function(){
+		$('.fh5co-post-entry').each(function() {
+			var currentPage = 0;
+			var numPerPage = {{ config.numPerPage }};
+			var $table = $(this);
+			$table.bind('repaginate', function() {
+				$table.find('article').hide().slice(currentPage * numPerPage, (currentPage + 1) * numPerPage).show();
+			});
+			$table.trigger('repaginate');
+			var numRows = $table.find('article').length;
+			var numPages = Math.ceil(numRows / numPerPage);
+			var $pager = $('<div class="pager"></div>');
+			for (var page = 0; page < numPages; page++) {
+				$('<span class="page-number"></span>').text(page + 1).bind('click', {
+					newPage: page
+				}, function(event) {
+					currentPage = event.data['newPage'];
+					$table.trigger('repaginate');
+					$(this).addClass('active').siblings().removeClass('active');
+				}).appendTo($pager).addClass('clickable');
+			}
+			$pager.insertAfter($table).find('span.page-number:first').addClass('active');
+		});
+	});
+	</script>
+	</body>
+</html>
