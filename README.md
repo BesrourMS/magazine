@@ -1,7 +1,7 @@
 # Magazine
 Magazine : Blogging Theme for Pico CMS
 
-##Installation
+## Installation
 Download the magazine folder, upload it in the themes folder of your pico installation and change the following setting within your config.php:
 ```sh
  $config['theme'] = 'magazine'; 
@@ -19,11 +19,11 @@ $config['authorimage'] = 'http://yoursite.com/images/yourphoto.jpg';
 $config['numPerPage'] = 16; // Number of posts on front page
 ```
 
-###Search & Categories
+### Search & Categories
 To activate search & categories functionalities, Download the plugins folder, upload the two folders : (<a href="https://github.com/julindra/pico_categories_page">pico_categories_page</a>, <a href="https://github.com/mwgg/Pico-Search">pico_search</a>) in your plugins folder and download search.md & categories.md from content-sample and upload its to your content folder.
 
-###Front Page & Post Page
+### Front Page & Post Page
 Copy index.md & page.md from content-sample to your content folder and change the meta data 
 
-##<a href="http://freehtml5.co/demos/magazine/">Demo</a>
+## <a href="http://freehtml5.co/demos/magazine/">Click here for the Demo</a>
 
