@@ -3,41 +3,64 @@
 /**
 * Categories Page for PicoCMS
 *
-* @author Renhard Julindra (http://renhard.net)
-* @link https://github.com/julindra/pico_categories_page
+* @author c4cat
+* @link https://github.com/c2315147
 */
 
-class Pico_Categories_Page
+
+
+class pico_categories_page extends AbstractPicoPlugin
 {
-    private $cat = array();
+	private $cat = array();
     
-    public function before_read_file_meta(&$headers)
-    {
-        $headers['purpose'] = 'Purpose';
-        $headers['category'] = 'Category';
-    }
+	public function onMetaHeaders(array &$headers )
+	{
 
-    public function get_page_data(&$data, $page_meta)
-    {
-        $data['category'] = $page_meta['category'];
-    }
+	    $headers['purpose'] = 'Purpose';
+	    $headers['category'] = 'Category';
 
-    public function get_pages(&$pages, &$current_page, &$prev_page, &$next_page)
-    {
-        foreach($pages as $key => $page) {
-            if($page['category']) {
-                $this->cat[$page['category']][$page['title']] = $page['url'];
-            }
-        }
-        ksort($this->cat);
-        foreach($this->cat as $key => $value) {
-            ksort($this->cat[$key]);
-        }
-    }
+	}
 
-    public function before_render(&$twig_vars, &$twig)
-    {
-        $twig_vars['pico_categories_page'] = $this->cat;
-    }
+
+        public function onSinglePageLoaded (array &$pageData )
+	{
+	    $pageData['category'] = $pageData['meta']['category'];
+	}
+
+
+    	public function onPagesLoaded(
+	    array &$pages,
+	    array &$currentPage = null,
+	    array &$previousPage = null,
+	    array &$nextPage = null 
+    	)
+   	{   
+	   
+	    $this->pages = $pages;
+
+	    foreach($this->pages as $k => $page)
+	    {
+	    	if($page['category']) {   
+		    $this->cat[$page['category']][$page['title']] = $page['url'];
+		}
+	    }
+
+	    ksort($this->cat);
+	
+	    foreach($this->cat as $key => $value) {
+	            ksort($this->cat[$key]);
+	    }  
+
+	}
+
+
+    	public function onPageRendering(Twig_Environment &$twig, array &$twigVariables, &$templateName)
+    	{
+
+		$twigVariables['pico_categories_page'] = $this->cat;
+		
+		$twigVariables['categories_term'] = trim($_GET["qc"]);
+	}
+
 }
 ?>
