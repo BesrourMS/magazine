@@ -113,9 +113,17 @@
 				<h3 class="heading">Categories</h3>
 				{% if meta.purpose == "pico_categories_page" %}
 				<ul>
-					{% for cat, cated_pages in pico_categories_page %}
-					<li><a href="categories">{{ cat }}</a></li>
-					{% endfor %}
+                                        {% for cat, cated_pages in pico_categories_page %}
+                                        <li>
+                                                <h4><b>{{ cat }}</b></h4>
+                                                <ul>
+                                                        {% for cated_page_title, cated_page_link in cated_pages %}
+                                                                <li><a href="{{ cated_page_link }}">{{ cated_page_title }}</a></li>
+                                                        {% endfor %}
+                                                </ul>
+						<p/>
+                                        </li>
+                                        {% endfor %}
 				</ul>
 				{% endif %}
 			</div>
