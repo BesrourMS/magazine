@@ -1,100 +1,77 @@
 <?php
+
 /**
- *
- * @author Pontus Horn
- * @link https://pontushorn.me
- * @repository https://github.com/PontusHorn/Pico-Search
- * @license http://opensource.org/licenses/MIT
- */
+* Plugin providing basic search functionality
+*
+* @author mwgg
+* @link https://github.com/mwgg/Pico-Search
+* @license http://opensource.org/licenses/MIT
+*/
 class PicoSearch extends AbstractPicoPlugin
 {
-    private $search_area;
-    private $search_terms;
-    /**
-     * Parses the requested URL to determine if a search has been requested. The search may be
-     * scoped to a folder. An example URL: yourdomain.com/blog/search/foobar/page/2,
-     * which searches the /blog folder for "foobar" and shows the second page of results using
-     * e.g. https://github.com/rewdy/Pico-Pagination.
-     *
-     * @see    Pico::getBaseUrl()
-     * @see    Pico::getRequestUrl()
-     * @param  string &$url request URL
-     * @return void
-     */
-    public function onRequestUrl(&$url)
+    protected $enabled = true;
+    protected $dependsOn = array();
+    private $pages = array();
+    private $baseDir = null;
+
+    public function onConfigLoaded(&$settings)
     {
-        // If form was submitted without being intercepted by JavaScript, redirect to the canonical search URL.
-        if (preg_match('~^(.+/)?search$~', $url) && $_GET['q']) {
-            header('Location: ' . $this->getPico()->getBaseUrl() . $url . '/' . urlencode($_GET['q']));
-            exit;
-        }
-        if (preg_match('~^(.+/)?search/([^/]+)(/.+)?$~', $url, $matches)) {
-            $this->search_terms = urldecode($matches[2]);
-            if (!empty($matches[1])) {
-                $this->search_area = $matches[1];
-            }
+        if (isset($settings['search_base_dir']) && strlen($settings['search_base_dir']) > 0) {
+            $this->baseDir = $settings['search_base_dir'];
         }
     }
-    /**
-     * If accessing search results, {@link Pico::discoverRequestFile()} will have failed since
-     * the search terms are included in the URL but do not map to a file. This method takes care
-     * of finding the appropriate file.
-     *
-     * @see    Pico::discoverRequestFile()
-     * @param  string &$file request file
-     * @return void
-     */
-    public function onRequestFile(&$file)
+
+    public function onMetaHeaders(array &$headers)
     {
-        if ($this->search_terms) {
-            $pico = $this->getPico();
-            // Aggressively strip out any ./ or ../ parts from the search area before using it
-            // as the folder to look in. Should already be taken care of previously, but just
-            // as a safeguard to make sure nothing slips through the cracks.
-            if ($this->search_area) {
-                $folder = str_replace('\\', '/', $this->search_area);
-                $folder = preg_replace('~\.+/~', '', $folder);
-            }
-            $temp_file = $pico->getConfig('content_dir') . ($folder ?: '') . 'search' . $pico->getConfig('content_ext');
-            if (file_exists($temp_file)) {
-                $file = $temp_file;
-            }
-        }
+        $headers['purpose'] = 'Purpose';
     }
-    /**
-     * If accessing search results, filter the $pages array to pages matching the search terms.
-     *
-     * @see    Pico::getPages()
-     * @see    Pico::getCurrentPage()
-     * @see    Pico::getPreviousPage()
-     * @see    Pico::getNextPage()
-     * @param  array &$pages        data of all known pages
-     * @param  array &$currentPage  data of the page being served
-     * @param  array &$previousPage data of the previous page
-     * @param  array &$nextPage     data of the next page
-     * @return void
-     */
-    public function onPagesLoaded(&$pages, &$currentPage, &$previousPage, &$nextPage)
+
+    public function onPagesLoaded(
+        array &$pages,
+        array &$currentPage = null,
+        array &$previousPage = null,
+        array &$nextPage = null
+    )
     {
-        if ($currentPage && isset($this->search_area) || isset($this->search_terms)) {
-            if (isset($this->search_area)) {
-                $pages = array_filter($pages, function ($page) {
-                    return substr($page['id'], 0, strlen($this->search_area)) === $this->search_area;
-                });
+        $this->pages = $pages;
+    }
+
+    public function onPageRendering(Twig_Environment &$twig, array &$twigVariables, &$templateName)
+    {
+        $q = strtoupper(trim($_GET["q"]));
+        while (strstr($q, "  ")) $q = str_replace("  ", " ", $q);
+        $qs = explode(" ", $q);
+
+        foreach($this->pages as $k => $page)
+        {
+            if (isset($this->baseDir) && strpos($page['id'], $this->baseDir) !== 0) {
+                continue;
             }
-            $pico = $this->getPico();
-            $excludes = $pico->getConfig('search_excludes');
-            if (!empty($excludes)) {
-                foreach ($excludes as $exclude_path) {
-                    unset($pages[$exclude_path]);
-                }
-            }
-            if (isset($this->search_terms)) {
-                $pages = array_filter($pages, function ($page) {
-                    return (stripos($page['title'], $this->search_terms) !== false)
-                        || (stripos($page['raw_content'], $this->search_terms) !== false);
-                });
+            $this->pages[$k]["score"] = 0;
+            $title = strtoupper($page["title"]);
+            $content = strtoupper($page["content"]);
+
+            if (strstr($title, $q)) $this->pages[$k]["score"]+= 10;
+            if (strstr($content, $q)) $this->pages[$k]["score"]+= 10;
+
+            foreach($qs as $query)
+            {
+                if (strstr($title, $query)) $this->pages[$k]["score"]+= 3;
+                if (strstr($content, $query)) $this->pages[$k]["score"]+= 3;
             }
         }
+
+        $counts = array();
+        foreach($this->pages as $page) $counts[] = $page["score"];
+        array_multisort($counts, $this->pages);
+        
+        foreach(array_reverse($this->pages) as $page)
+        {
+            if ($page["score"] > 0) $twigVariables['search_results'][] = $page;
+        }
+
+        $twigVariables['search_num_results'] = count($twigVariables['search_results']);
+        $twigVariables['search_term'] = trim($_GET["q"]);
     }
 }
+?>
