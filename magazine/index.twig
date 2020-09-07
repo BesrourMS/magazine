@@ -144,7 +144,7 @@
 				<figure>
 					<a href="{{ page.url }}"><img src="{{ page.meta.thumbnail }}" alt="{{ page.title }}" class="img-responsive"></a>
 				</figure>
-				<span class="fh5co-meta"><a href="#">{{ page.meta.category }}</a></span>
+				<span class="fh5co-meta"><a href="{{base_url}}/categories?qc={{page.meta.category}}">{{ page.meta.category }}</a></span>
 				<h2 class="fh5co-article-title entry-title"><a href="{{ page.url }}">{{ page.title }}</a></h2>
 				<span class="fh5co-meta fh5co-date">{{ page.date }}</span>
 			</article>
