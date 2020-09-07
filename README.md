@@ -18,9 +18,14 @@ $config['authorinstagram'] = 'https://www.instagram.com/YourUsername';
 $config['authorimage'] = 'http://yoursite.com/images/yourphoto.jpg';
 $config['numPerPage'] = 16; // Number of posts on front page
 ```
+For Pico CMS >= 2.0 add to config/config.yml
+```sh
+theme: magazine
+```
+(If the file does not exist, create it. For more info see config/config.yml.template)
 
 ### Search & Categories
-To activate search & categories functionalities, Download the plugins folder, upload the two folders : (<a href="https://github.com/julindra/pico_categories_page">pico_categories_page</a>, <a href="https://github.com/mwgg/Pico-Search">pico_search</a>) in your plugins folder and download search.md & categories.md from content-sample and upload its to your content folder.
+To activate search & categories functionalities, Download the plugins folder, upload the two folders : (<a href="https://github.com/c2315147">pico_categories_page</a>, <a href="https://github.com/mwgg/Pico-Search">pico_search</a>) in your plugins folder and download search.md & categories.md from content-sample and upload its to your content folder.
 
 ### Front Page & Post Page
 Copy index.md & page.md from content-sample to your content folder and change the meta data 
