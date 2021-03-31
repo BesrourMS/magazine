@@ -11,20 +11,13 @@
 
 class pico_categories_page extends AbstractPicoPlugin
 {
+	const API_VERSION = 3;
 	private $cat = array();
-    
-	public function onMetaHeaders(array &$headers )
-	{
 
-	    $headers['purpose'] = 'Purpose';
-	    $headers['category'] = 'Category';
-
-	}
-
-
-        public function onSinglePageLoaded (array &$pageData )
+	public function onSinglePageLoaded (array &$pageData )
 	{
 	    $pageData['category'] = $pageData['meta']['category'];
+	    $pageData['purpose'] = $pageData['meta']['purpose'];
 	}
 
 
@@ -54,12 +47,9 @@ class pico_categories_page extends AbstractPicoPlugin
 	}
 
 
-    	public function onPageRendering(Twig_Environment &$twig, array &$twigVariables, &$templateName)
+	public function onPageRendering(string &$templateName, array &$twigVariables)
     	{
-
-		$twigVariables['pico_categories_page'] = $this->cat;
-		
-		$twigVariables['categories_term'] = trim($_GET["qc"]);
+	     $twigVariables['pico_categories_page'] = $this->cat;
 	}
 
 }
