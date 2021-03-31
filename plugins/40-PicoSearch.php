@@ -3,12 +3,14 @@
 /**
 * Plugin providing basic search functionality
 *
-* @author mwgg
-* @link https://github.com/mwgg/Pico-Search
+* @author c4cat
+* @link https://github.com/c2315147
 * @license http://opensource.org/licenses/MIT
 */
 class PicoSearch extends AbstractPicoPlugin
 {
+    const API_VERSION = 3;
+    
     protected $enabled = true;
     protected $dependsOn = array();
     private $pages = array();
@@ -21,11 +23,14 @@ class PicoSearch extends AbstractPicoPlugin
         }
     }
 
-    public function onMetaHeaders(array &$headers)
+    public function onSinglePageLoaded (array &$pageData )
     {
-        $headers['purpose'] = 'Purpose';
+        $pageData['search_term'] = '';
+        $pageData['search_results'] = array();
+        $pageData['search_num_results'] = 0;
     }
-
+    
+    
     public function onPagesLoaded(
         array &$pages,
         array &$currentPage = null,
@@ -35,10 +40,14 @@ class PicoSearch extends AbstractPicoPlugin
     {
         $this->pages = $pages;
     }
-
-    public function onPageRendering(Twig_Environment &$twig, array &$twigVariables, &$templateName)
+    
+    public function onPageRendering(string &$templateName, array &$twigVariables)
     {
-        $q = strtoupper(trim($_GET["q"]));
+        $q=" ";
+        if ($templateName == "search.twig") {
+            $q = trim($_GET['q']);
+        };
+        
         while (strstr($q, "  ")) $q = str_replace("  ", " ", $q);
         $qs = explode(" ", $q);
 
@@ -48,16 +57,16 @@ class PicoSearch extends AbstractPicoPlugin
                 continue;
             }
             $this->pages[$k]["score"] = 0;
-            $title = strtoupper($page["title"]);
-            $content = strtoupper($page["content"]);
+            $title = $page["title"];
+            $content = $page["raw_content"];
 
-            if (strstr($title, $q)) $this->pages[$k]["score"]+= 10;
-            if (strstr($content, $q)) $this->pages[$k]["score"]+= 10;
-
+            if (stripos($title, $q) === false) { } else {$this->pages[$k]["score"]+= 10;}
+            if (stripos($content, $q) === false ) {} else {$this->pages[$k]["score"]+= 10;}
+            
             foreach($qs as $query)
             {
-                if (strstr($title, $query)) $this->pages[$k]["score"]+= 3;
-                if (strstr($content, $query)) $this->pages[$k]["score"]+= 3;
+                if (stripos($title, $query) === false) {} else {$this->pages[$k]["score"]+= 3;}
+                if (stripos($content, $query) === false) {} else {$this->pages[$k]["score"]+= 3;}
             }
         }
 
@@ -70,8 +79,12 @@ class PicoSearch extends AbstractPicoPlugin
             if ($page["score"] > 0) $twigVariables['search_results'][] = $page;
         }
 
-        $twigVariables['search_num_results'] = count($twigVariables['search_results']);
-        $twigVariables['search_term'] = trim($_GET["q"]);
+        if (empty($twigVariables['search_results'])) {
+            $twigVariables['search_num_results'] = 0;
+        } else {
+            $twigVariables['search_num_results'] = count($twigVariables['search_results']);
+        }
+        
     }
 }
 ?>
