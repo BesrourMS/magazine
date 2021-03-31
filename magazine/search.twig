@@ -94,7 +94,7 @@
 	<div class="container-fluid">
 		{% if meta.purpose == "search_results" %}
 		<div class="row fh5co-post-entry">
-			<p class="col-lg-12 col-md-12 text-center">{{ search_num_results }} page(s) found for " {{ search_term }} "</p>
+			<p class="col-lg-12 col-md-12 text-center">{{ search_num_results }} page(s) found for " {{url_param('q','string')}} "</p>
 			{% for page in search_results %}
 			<article class="col-lg-3 col-md-4 col-sm-6 col-xs- 12 animate-box">
 				<figure>
