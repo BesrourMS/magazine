@@ -65,7 +65,7 @@
 		<div class="fh5co-bio">
 			<figure>
 				{% if config.authorimage %}
-				<img src="{{ config.authorimage }}" alt="{{ config.author }}" class="img-responsive">
+				<img src="{{assets_url}}/{{ config.authorimage }}" alt="{{ config.author }}" class="img-responsive">
 				{% else %}
 				<img src="{{ theme_url }}/images/person1.jpg" alt="{{ config.author }}" class="img-responsive">
 				{% endif %}
@@ -142,7 +142,7 @@
 			{% if page.meta.template == "single" %}
 			<article class="col-lg-3 col-md-4 col-sm-6 col-xs- 12 animate-box hentry">
 				<figure>
-					<a href="{{ page.url }}"><img src="{{ page.meta.thumbnail }}" alt="{{ page.title }}" class="img-responsive"></a>
+					<a href="{{ page.url }}"><img src="{{assets_url}}/{{ page.meta.thumbnail }}" alt="{{ page.title }}" class="img-responsive"></a>
 				</figure>
 				<span class="fh5co-meta"><a href="{{base_url}}/categories?qc={{page.meta.category}}">{{ page.meta.category }}</a></span>
 				<h2 class="fh5co-article-title entry-title"><a href="{{ page.url }}">{{ page.title }}</a></h2>
