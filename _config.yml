@@ -1,0 +1,8 @@
+title: Magazine
+description: "Magazine : Blogging Theme for Pico CMS"
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-minimal
+
+gems:
+  - jekyll-mentions
